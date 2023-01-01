@@ -12,7 +12,7 @@ import {
 //поверхностное копирование обьектов
 
 
-test ('referense type test',()=>{
+test ('reference type test',()=>{
     let user:UserType= {
         name: 'Alex',
         hair: 40,
@@ -20,9 +20,9 @@ test ('referense type test',()=>{
             city: 'Piter'
         }
     }
-   const  cuttenUser=hairStyle(user,2)
+   const  cutterUser=hairStyle(user,2)
 
-    expect(cuttenUser.hair).toBe(20)
+    expect(cutterUser.hair).toBe(20)
     expect(user.hair).toBe(40)
 })
 
