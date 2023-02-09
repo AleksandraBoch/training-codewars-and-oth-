@@ -1,30 +1,24 @@
-type UserType = {
-    id: number
-    userName: string
-    email: string
-    password: string
-}
-
-type ChangeUserPasswordTypeAT = {
-    type: "CHANGE-USER-PASSWORD"
-    payload: {
-       id:number
-        newPassword:string
+export const reducer = (state: any, action: any) => {
+    switch (action.type) {
+        case 'TRACK-DELETED':
+            return state.filter((track: any) => track.id!==action.trackId)
+        default:
+            return state
     }
 }
 
-export const userReducer =
-    (state: UserType[], action: ChangeUserPasswordTypeAT): UserType[] => {
-        switch (action.type) {
-            case "CHANGE-USER-PASSWORD":
-                return state.map(u =>
-                    u.id === action.payload.id
-                        ? {...u, password: action.payload.newPassword}
-                        : u)
-            default:
-                return state
-        }
-    }
+const deleteTrackAC = (trackId: number) => ({type: 'TRACK-DELETED', trackId})
 
-//Какой код должен быть написан вместо XXX и YYY в типе //ChangeUserPasswordTypeAT, что бы редьюсер работал?
-//В ответе напишите через пробел: XXX  YYY
+
+const state = [
+    {id: 12, likesCount: 10},
+    {id: 14, likesCount: 2},
+    {id: 100, likesCount: 0}
+]
+const newState = reducer(state, deleteTrackAC(14))
+
+console.log(newState.length === 2)
+
+
+// Что нужно написать вместо XXX, чтобы корректно удалить трек и в консоли увидеть true?
+//track.id!==action.trackId
