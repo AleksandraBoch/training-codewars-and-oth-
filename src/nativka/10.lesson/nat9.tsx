@@ -1,3 +1,5 @@
 import React from "react";
 
-//learning
+//замыкание,лексическое окружение, счетчик
+
+
