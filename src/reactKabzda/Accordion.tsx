@@ -16,12 +16,12 @@ export function Accordion(props:AccordionPropsType){
     </div>
 }
 
-type AccordionTittlePtopsType={
+type AccordionTittlePropsType ={
     title:string
     onChange:()=>void
 }
 
-function AccordionTitle(props:AccordionTittlePtopsType){
+function AccordionTitle(props:AccordionTittlePropsType){
     return(
 
         <h3 onClick={(e)=>props.onChange()}>===</h3>
