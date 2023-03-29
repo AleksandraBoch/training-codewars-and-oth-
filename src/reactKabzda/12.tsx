@@ -23,3 +23,27 @@ export const GetValueOfUncontrolledInputButtonPress=()=>{
         -actual value:{value}</>
 
 }
+
+export const ControlledInput=()=>{//контролируемый инпут
+    const[parentValue,setParentValue]=useState('')
+
+    return<input value={parentValue} onChange={(e)=>{setParentValue(e.currentTarget.value)}}/>
+}
+
+export const ControlledCheckBox=()=>{
+    const[parentValue,setParentValue]=useState(true)
+
+    return<input type={'checkbox'} checked={parentValue} onChange={(e)=>{setParentValue(e.currentTarget.checked)}}/>
+}
+
+export const ControlledSelect=()=>{
+    const[parentValue,setParentValue]=useState<string|undefined>('0')
+
+    return<input type={'checkbox'}  onChange={(e)=>{setParentValue(e.currentTarget.value)}}/>
+
+    return <select>
+        <option value={'0'}>none</option>
+        <option value={'2'}>Moscow</option>
+        <option value={'3'}>Minsk</option>
+    </select>
+}
