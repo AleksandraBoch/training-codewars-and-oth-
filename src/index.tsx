@@ -1,76 +1,60 @@
-import {createStore} from 'redux'
+import React, {useCallback, useMemo, useState} from 'react'
 import ReactDOM from 'react-dom'
-import {Provider, useSelector, useDispatch} from 'react-redux'
-import React from 'react'
 
-const students = {
-    students: [
-        {id: 1, name: 'Bob'},
-        {id: 2, name: 'Alex'},
-        {id: 3, name: 'Donald'},
-        {id: 4, name: 'Ann'},
-    ]
-}
-type RemoveStudentAT = {
-    type: "REMOVE-STUDENT"
+type ButtonType = {
     id: number
+    title: string
+    forAdminOnly: boolean
 }
-const RemoveStudentAC = (id: number): RemoveStudentAT => ({
-    type: "REMOVE-STUDENT",
-    id
+const buttons: ButtonType[] = [
+    {id: 1, title: 'delete', forAdminOnly: true},
+    {id: 2, title: 'update', forAdminOnly: true},
+    {id: 3, title: 'create', forAdminOnly: false},
+]
+
+export const App = ({isAdmin}: { isAdmin: boolean }) => {
+
+    const [seconds, setSeconds] = useState(0)
+
+    const increaseSeconds = () => setSeconds(seconds + 10)
+
+    const correctButtons = useMemo(() => {
+        return buttons.filter(b => isAdmin ? true : !b.forAdminOnly)
+    }, [isAdmin])
+
+    return <>
+        <ButtonsPanel buttons={correctButtons}/>
+        <div>
+            <p>
+                <b>Секунды: {seconds}</b>
+            </p>
+            <button onClick={increaseSeconds}>
+                Увеличить на 10 секунд
+            </button>
+        </div>
+    </>
+}
+
+const ButtonsPanel = React.memo((props: { buttons: Array<ButtonType> }) => {
+    console.log('Render ButtonsPanel')
+    return (
+        <div style={{marginBottom: '15px'}}>
+            <div style={{marginBottom: '15px'}}>
+                <b>Панель с кнопками</b>
+            </div>
+            <div>
+                {props.buttons.map(b => <button key={b.id}>{b.title}</button>)}
+            </div>
+        </div>
+    )
 })
 
-const studentsReducer = (state = students, action: RemoveStudentAT) => {
-    switch (action.type) {
-        case "REMOVE-STUDENT":
-            return {
-                ...state,
-                students: state.students.filter(s => s.id !== action.id)
-            }
-    }
-    return state
-}
+ReactDOM.render(<App isAdmin={true}/>, document.getElementById('root'))
 
-const store = createStore(studentsReducer)
-type RootStateType = ReturnType<typeof studentsReducer>
+// Что нужно написать вместо XXX и YYY,
+// чтобы избавиться от лишнего перерендера компонента ButtonsPanel
+// при нажатии на кнопку "Увеличить на 10 секунд" ?
 
+// Ответ дайте через пробел: 111 222
 
-const StudentList = () => {
-    const listItemStyles = {
-        width: "100px",
-        borderBottom: "1px solid gray",
-        cursor: "pointer",
-    }
-    const students = useSelector((state: RootStateType) => state.students)
-    const dispatch = useDispatch()
-    const studentsList = students.map(s => {
-        const removeStudent = () => {
-            dispatch(RemoveStudentAC(s.id))
-        }
-        return (
-            <li key={s.id}
-                style={listItemStyles}
-                onClick={removeStudent}>
-                {s.name}
-            </li>)
-    })
-    return (
-        <ol>
-            {studentsList}
-        </ol>
-
-    )
-}
-
-
-ReactDOM.render(<div>
-        <Provider store={store}>
-            <StudentList/>
-        </Provider>
-    </div>,
-    document.getElementById('root')
-)
-
-// Что нужно написать вместо XXX, YYY и ZZZ, чтобы при клике по имени студент
-// удалялся из списка? Напишите через пробел.
-//dispatch RemoveStudentAC s.id
+// useMemo isAdmin
