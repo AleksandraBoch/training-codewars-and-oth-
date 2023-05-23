@@ -1,60 +1,61 @@
-import React, {useCallback, useMemo, useState} from 'react'
-import ReactDOM from 'react-dom'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom/client';
 
-type ButtonType = {
-    id: number
-    title: string
-    forAdminOnly: boolean
-}
-const buttons: ButtonType[] = [
-    {id: 1, title: 'delete', forAdminOnly: true},
-    {id: 2, title: 'update', forAdminOnly: true},
-    {id: 3, title: 'create', forAdminOnly: false},
-]
-
-export const App = ({isAdmin}: { isAdmin: boolean }) => {
-
-    const [seconds, setSeconds] = useState(0)
-
-    const increaseSeconds = () => setSeconds(seconds + 10)
-
-    const correctButtons = useMemo(() => {
-        return buttons.filter(b => isAdmin ? true : !b.forAdminOnly)
-    }, [isAdmin])
-
-    return <>
-        <ButtonsPanel buttons={correctButtons}/>
-        <div>
-            <p>
-                <b>Секунды: {seconds}</b>
-            </p>
-            <button onClick={increaseSeconds}>
-                Увеличить на 10 секунд
-            </button>
-        </div>
-    </>
+// Types
+type TodoType = {
+    id: string;
+    tile: string;
+    order: number;
+    createdAt: string;
+    updatedAt: string;
+    complete: boolean;
 }
 
-const ButtonsPanel = React.memo((props: { buttons: Array<ButtonType> }) => {
-    console.log('Render ButtonsPanel')
+
+// Api
+const instance = axios.create({baseURL: 'https://exams-frontend.kimitsu.it-incubator.ru/api/'})
+
+const todosAPI = {
+    getTodos() {
+        return instance.get<TodoType[]>('todos')
+    },
+}
+
+
+// App
+const App = () => {
+
+    const [todos, setTodos] = useState<TodoType[]>([])
+
+    useEffect(() => {
+        todosAPI.getTodos().then((res) => setTodos(res.data))
+    }, [])
+
     return (
-        <div style={{marginBottom: '15px'}}>
-            <div style={{marginBottom: '15px'}}>
-                <b>Панель с кнопками</b>
-            </div>
-            <div>
-                {props.buttons.map(b => <button key={b.id}>{b.title}</button>)}
-            </div>
-        </div>
+        <>
+            <h2>✅ Список тудулистов</h2>
+            {
+                todos.map((t) => {
+                    return (
+                        <div style={t.complete ? {color: 'grey'} : {}} key={t.id}>
+                            <input type="checkbox" checked={t.complete}/>
+                            <b>Описание</b>: {t.tile}
+                        </div>
+                    )
+                })
+            }
+        </>
     )
-})
+}
 
-ReactDOM.render(<App isAdmin={true}/>, document.getElementById('root'))
 
-// Что нужно написать вместо XXX и YYY,
-// чтобы избавиться от лишнего перерендера компонента ButtonsPanel
-// при нажатии на кнопку "Увеличить на 10 секунд" ?
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+root.render(<App/>)
 
-// Ответ дайте через пробел: 111 222
+// 📜 Описание:
+// При написании типизации по невнимательности было допущено несколько ошибок.
+// Напишите через пробел правильные свойства в TodoType, в которых была допущена ошибка.
+// Debugger / network / документация вам в помощь
 
-// useMemo isAdmin
+// 🖥 Пример ответа: id status isDone
