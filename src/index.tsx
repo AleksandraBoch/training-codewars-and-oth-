@@ -3,22 +3,29 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client';
 
 // Types
-type TodoType = {
-    id: string;
-    title: string;
-    order: number;
-    createdAt: string;
-    updatedAt: string;
-    completed: boolean;
+type PhotoType = {
+    albumId: string
+    id: string
+    title: string
+    url: string
 }
 
+type PayloadType = {
+    title: string
+    url?: string
+}
 
 // Api
 const instance = axios.create({baseURL: 'https://exams-frontend.kimitsu.it-incubator.ru/api/'})
 
-const todosAPI = {
-    getTodo(todoId: string) {
-        return instance.get<TodoType>(`todos/${todoId}`)
+const photoId = '637df6dc99fdc52af974a517'
+
+const photosAPI = {
+    getPhoto() {
+        return instance.get<PhotoType>(`photos/${photoId}`)
+    },
+    updatePhoto(payload: PayloadType) {
+        return instance.put<PhotoType>(`photos/${photoId}`, payload)
     }
 }
 
@@ -26,33 +33,40 @@ const todosAPI = {
 // App
 export const App = () => {
 
-    const [todo, setTodo] = useState<TodoType | null>(null)
-    const [error, setError] = useState<string>('')
+    const [photo, setPhoto] = useState<PhotoType | null>(null)
 
     useEffect(() => {
-        const todoId = "637cb9342f24ad82bcb07d8d"
-        todosAPI.getTodo(todoId)
-            .then((res) => setTodo(res.data))
-            .catch(e => {
-                setError('Ошибка 😰. Анализируй network 😉')
+        photosAPI.getPhoto()
+            .then((res) => {
+                setPhoto(res.data)
             })
     }, [])
 
+    const updatePhotoHandler = () => {
+        // ❗ title и url указаны в качестве заглушки. Server сам сгенерирует новый title
+        const payload = {
+            title: 'Новый title',
+            url: 'data:image/png;base64,iVBORw0FAKEADDRESSnwMZAABJRUrkJggg=='
+        }
+        photosAPI.updatePhoto(payload)
+            .then((res) => {
+                setPhoto(res.data)
+            })
+    };
 
     return (
         <>
-            <h2>✅ Тудулист</h2>
-            {
-                !!todo
-                    ? <div>
-                        <div style={todo?.completed ? {color: 'grey'} : {}} key={todo?.id}>
-                            <input type="checkbox" checked={todo?.completed}/>
-                            <b>Описание</b>: {todo?.title}
-                        </div>
-                        <h2>Так держать. Ты справился 🚀</h2>
-                    </div>
-                    : <h2 style={{ color: 'red' }}>{error}</h2>
-            }
+            <h1>📸 Фото</h1>
+            <div>
+                <div style={{marginBottom: '15px'}}>
+                    <h1>title: {photo?.title}</h1>
+                    <div><img src={photo?.url} alt=""/></div>
+                </div>
+                <button style={{marginLeft: '15px'}}
+                        onClick={updatePhotoHandler}>
+                    Изменить title
+                </button>
+            </div>
         </>
     )
 }
@@ -62,10 +76,11 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(<App/>)
 
 // 📜 Описание:
-// Студент по неопытности допустил одну маленькую ошибку, но из-за нее он не может вывести на экран тудулист.
-// Найдите ошибку и вставьте исправленную версию строки кода в качестве ответа
-// P.S. Эта ошибка из реальной жизни, студенты часто ошибаются подобным образом и не могут понять в чем дело.
+// При нажатии на кнопку "Изменить title" title должен обновиться,
+// но из-за невнимательности была допущена ошибка и изменение не происходит
+//
+// Найдите и исправьте ошибку
+// Исправленную версию строки напишите в качестве ответа.
 
-// 🖥 Пример ответа:  .then((res: any) => setTodo(res.data.data))
-
-//return instance.get<TodoType>(`todos/${todoId}`)
+// 🖥 Пример ответа: photosAPI.updatePhotoTitle(id, title)
+//return instance.put<PhotoType>(`photos/${photoId}`, payload)
