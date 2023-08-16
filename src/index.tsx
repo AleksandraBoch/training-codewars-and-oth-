@@ -89,7 +89,7 @@ const App = () => {
     }, [])
 
     const addCommentHandler = () => {
-        dispatch(addCommentTC)
+        dispatch(addCommentTC())
         alert('Комментарий добавить не получилось. Напишите код самостоятельно 🚀')
     };
 
