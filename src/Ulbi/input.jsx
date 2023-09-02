@@ -6,6 +6,9 @@ const Input = (props) => {
 
     const [title, seTitle] = useState('')
     const addNewPost = (e) => {
+        //тут удаляется обычная работа формы-те этим самым говорим что
+        //покнопке мы не делаем перезагрузку страницы
+        e.preventDefault()
        seTitle(e.currentTarget.value)
     }
     return (
