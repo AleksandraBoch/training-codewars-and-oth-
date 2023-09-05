@@ -1,9 +1,10 @@
 import React from 'react';
-import PostItem, {PostItemType} from "./component";
-import Input from "./input";
+import PostItem from "./component";
+import Button from "./button";
 
 
-const PostList = ({post, title}) => {
+
+const PostList = ({post, title,removePost}) => {
 
 
     return (
@@ -11,11 +12,9 @@ const PostList = ({post, title}) => {
 
             <h1 style={{textAlign: 'center'}}> {title}</h1>
             {/*<PostItem  post={{id:1,title:'JS',text:'Js-язык программирования'}}/>*/}
-            {post.map((post) =>
-                <PostItem key={post.id} post={post}/>
+            {post.map((post,index) =>
+                <PostItem removePost={removePost} number={index+1}key={post.id} post={post}/>
             )}
-
-            <Input/>
         </div>
     );
 };

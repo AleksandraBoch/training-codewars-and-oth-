@@ -4,35 +4,40 @@ import MyInput from "./MyInput";
 
 const Input = (props) => {
 
-    const [title, seTitle] = useState('')
-    const [body,setBody]=useState('')
+    // const [title, seTitle] = useState('')
+    // const [body, setBody] = useState('')
 
     const addNewPost = (e) => {
         //тут удаляется обычная работа формы-те этим самым говорим что
         //покнопке мы не делаем перезагрузку страницы
         e.preventDefault()
-       seTitle(e.currentTarget.value)
-
+        // const newPost = {
+        //     id:Date.now(),
+        //     title,
+        //     body
+        // }
     }
+
 
     return (
         <div>
-            <form>
-                <MyInput
-                    value={title}
-                    onChange={addNewPost}
-                    type={"text"}
-                    placeholder={'post title'} {...props}/>
-                <MyInput
-                    //берем инфу у неконтролируемогоинпута
-                    ref={bodyInputRef}
-                    type={"text"}
-                    placeholder={'post description'}
-                    {...props}/>
-                <Button disabled
-                        onClick={addNewPost}>Add </Button>
+            {/*<form>*/}
+            {/*    <MyInput*/}
+            {/*        value={title}*/}
+            {/*        onChange={e => seTitle(e.target.value)}*/}
+            {/*        type={"text"}*/}
+            {/*        placeholder={'post title'} {...props}/>*/}
+            {/*    <MyInput*/}
 
-            </form>
+            {/*        value={body}*/}
+            {/*        onChange={e => setBody(e.target.value)}*/}
+            {/*        type={"text"}*/}
+            {/*        placeholder={'post description'}*/}
+            {/*        {...props}/>*/}
+            {/*    <Button disabled*/}
+            {/*            onClick={addNewPost}>Add </Button>*/}
+
+            {/*</form>*/}
 
         </div>
     );
