@@ -1,20 +1,31 @@
 import React from 'react';
 import PostItem from "./component";
-import Button from "./button";
+import {CSSTransition, TransitionGroup} from "react-transition-group";
 
 
-
-const PostList = ({post, title,removePost}) => {
+const PostList = ({post, title, removePost}) => {
 
 
     return (
         <div>
 
+
             <h1 style={{textAlign: 'center'}}> {title}</h1>
             {/*<PostItem  post={{id:1,title:'JS',text:'Js-язык программирования'}}/>*/}
-            {post.map((post,index) =>
-                <PostItem removePost={removePost} number={index+1}key={post.id} post={post}/>
-            )}
+            <TransitionGroup>
+
+                {post.map((post, index) =>
+                    <CSSTransition key={post.id}
+                                   // nodeRef={nodeRef}
+                                   timeout={500}
+                                   classNames="post" >
+
+                        <PostItem removePost={removePost} number={index + 1} post={post}/>
+                    </CSSTransition>
+                )}
+
+            </TransitionGroup>
+
         </div>
     );
 };

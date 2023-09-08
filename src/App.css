@@ -1,14 +1,32 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-#root{
-  display: flex;
-  justify-content: center;
+#root {
+    display: flex;
+    justify-content: center;
 }
 
-.App{
-  width: 800px;
+.App {
+    width: 800px;
+}
+
+.post-enter-enter {
+    opacity: 0;
+}
+
+.post-enter-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.post-enter-exit {
+    opacity: 1;
+}
+
+.post-enter-exit-active {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
 }

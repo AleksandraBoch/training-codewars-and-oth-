@@ -4,6 +4,8 @@ import PostList from "./Ulbi/postList";
 import MyInput from "./Ulbi/MyInput";
 import PostForm from "./Ulbi/PostForm";
 import Select from "./Ulbi/select";
+import MyModal from "./Ulbi/Modal/myModal";
+import Button from "./Ulbi/button";
 
 function App() {
     const [post, setPost] = useState([
@@ -21,27 +23,37 @@ function App() {
 
     const [selectedSort, setSelectedSort] = useState('')
     const [searchQuery, setSearchQuery] = useState('')
+    const [modalVisible, setModalVisible] = useState(false)
 
     const createPost = (newPost) => {
         setPost([...post, newPost])
+        setModalVisible(false)
     }
     const removePost = (post) => {
-        setPost([post].filter(p => p.id !== post.id))
+        setPost(post.filter(p => p.id !== post.id))
     }
 
     const sortedPost = useMemo(() => {
-        if (selectedSort) {
-            return [...post].sort((a, b) => a[sort].localCompare(b[sort]))
+        if (filter.sort) {
+            return [...post].sort((a, b) => a.sort.localCompare(b.sort))
         }
     })
 
     const searchAndSort = useMemo(() => {
-        return sortedPost.filter(post => post.title.toLowerCase().includes(searchQuery))
+        //поиск по сортированным постам
+        // return sortedPost.filter(p=>p.title.toLowerCase().includes(searchQuery))
+
+
+        // return sortedPost.filter(post => post.title.toLowerCase().includes(searchQuery))
     }, [searchQuery, sortedPost])
 
     return (
         <div className="App">
-            <PostForm create={createPost}/>
+            <Button style={{marginTop:15}} onClick={() => setModalVisible(true)}> Add Post</Button>
+            <MyModal visible={modalVisible} setVisible={setModalVisible}>
+                <PostForm create={createPost}/>
+            </MyModal>
+
             <hr style={{margin: '15px 0 '}}/>
             <div>
                 <MyInput placeholder={'search'} value={searchAndSort}
@@ -52,11 +64,10 @@ function App() {
                     defaultValue={'Sort'}
                     options={[
                         {value: 'title', name: 'by name'},
-                        {value: 'body', name: 'by description'}
-                    ]}/>
+                        {value: 'body', name: 'by description'}]}/>
             </div>
 
-            {searchAndSort.length !== 0
+            {post.length !== 0
                 ? <><PostList removePost={removePost} title={'Frontend'} post={post}/>
                     {/*<PostList title={'Backend'}*/}
                     {/*          post={post2}/>*/}
