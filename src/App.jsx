@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import PostList from "./Ulbi/postList";
 import MyInput from "./Ulbi/MyInput";
@@ -6,6 +6,9 @@ import PostForm from "./Ulbi/PostForm";
 import Select from "./Ulbi/select";
 import MyModal from "./Ulbi/Modal/myModal";
 import Button from "./Ulbi/button";
+import {usePosts} from "./Ulbi/hooks/usePost";
+import PostService from "./Ulbi/API/postService";
+import Loader from "./Ulbi/Loader/Loader";
 
 function App() {
     const [post, setPost] = useState([
@@ -20,10 +23,13 @@ function App() {
     //     {id: 2, title: 'Ruby', text: 'Ruby-язык программирования'},
     //     {id: 3, title: 'Another', text: 'Another-язык программирования'}
     // ])
-
+const [filter,setFilter]=useState({sort:'',query:''})
     const [selectedSort, setSelectedSort] = useState('')
     const [searchQuery, setSearchQuery] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
+    const searchAndSort=usePosts(post,filter.sort,filter.query)
+
+    const [isPostLoading,setIsPostLoading]=useState(false)
 
     const createPost = (newPost) => {
         setPost([...post, newPost])
@@ -33,22 +39,32 @@ function App() {
         setPost(post.filter(p => p.id !== post.id))
     }
 
-    const sortedPost = useMemo(() => {
-        if (filter.sort) {
-            return [...post].sort((a, b) => a.sort.localCompare(b.sort))
-        }
-    })
-
-    const searchAndSort = useMemo(() => {
+    // const sortedPost = useMemo(() => {
+    //     if (filter.sort) {
+    //         return [...post].sort((a, b) => a.sort.localCompare(b.sort))
+    //     }
+    // })
+    //
+    // const searchAndSort = useMemo(() => {
         //поиск по сортированным постам
         // return sortedPost.filter(p=>p.title.toLowerCase().includes(searchQuery))
-
-
         // return sortedPost.filter(post => post.title.toLowerCase().includes(searchQuery))
-    }, [searchQuery, sortedPost])
+    // }, [searchQuery, sortedPost])
 
+useEffect(()=>{
+//посты сразу подгружаются
+    fetchPosts()
+},[])
+
+   async function fetchPosts(){
+       setIsPostLoading(true)
+        const  posts=await PostService.getAll()
+       setPost(posts)
+       setIsPostLoading(false)
+    }
     return (
         <div className="App">
+            <Button onClick={fetchPosts}>Get Posts</Button>
             <Button style={{marginTop:15}} onClick={() => setModalVisible(true)}> Add Post</Button>
             <MyModal visible={modalVisible} setVisible={setModalVisible}>
                 <PostForm create={createPost}/>
@@ -67,12 +83,16 @@ function App() {
                         {value: 'body', name: 'by description'}]}/>
             </div>
 
-            {post.length !== 0
-                ? <><PostList removePost={removePost} title={'Frontend'} post={post}/>
+            {setIsPostLoading
+                ?<div style={{display:'flex',justifyContent:"center"}}>
+
+                    <Loader/>
+                </div>
+                :
+                 <><PostList removePost={removePost} title={'Frontend'} post={post}/>
                     {/*<PostList title={'Backend'}*/}
                     {/*          post={post2}/>*/}
-                </>
-                : <div>Посты не найдены</div>}
+                </>}
         </div>
     );
 }
