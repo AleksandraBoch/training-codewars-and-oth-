@@ -9,6 +9,8 @@ import Button from "./Ulbi/button";
 import {usePosts} from "./Ulbi/hooks/usePost";
 import PostService from "./Ulbi/API/postService";
 import Loader from "./Ulbi/Loader/Loader";
+import useFetching from "./Ulbi/hooks/useFetching";
+import {getPagesCount} from "./Ulbi/utils/pages";
 
 function App() {
     const [post, setPost] = useState([
@@ -23,13 +25,25 @@ function App() {
     //     {id: 2, title: 'Ruby', text: 'Ruby-язык программирования'},
     //     {id: 3, title: 'Another', text: 'Another-язык программирования'}
     // ])
-const [filter,setFilter]=useState({sort:'',query:''})
+    const [filter, setFilter] = useState({sort: '', query: ''})
     const [selectedSort, setSelectedSort] = useState('')
     const [searchQuery, setSearchQuery] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
-    const searchAndSort=usePosts(post,filter.sort,filter.query)
+    const searchAndSort = usePosts(post, filter.sort, filter.query)
+    const [totalPages, setTotalPages] = useState(0)
+    const [pages, setPages] = useState(1)
+    const [limit, setLimit] = useState(10)
 
-    const [isPostLoading,setIsPostLoading]=useState(false)
+
+    const [fetchPosts, isFetchPosts, postError] = useFetching(async () => {
+        const response = await PostService.getAll(limit,pages)
+        setPost(response.data)
+        const totalCount=response.headers['x-total-count']
+        setTotalPages(getPagesCount(totalCount,limit))
+    })
+
+
+    // const [isPostLoading,setIsPostLoading]=useState(false)
 
     const createPost = (newPost) => {
         setPost([...post, newPost])
@@ -46,26 +60,26 @@ const [filter,setFilter]=useState({sort:'',query:''})
     // })
     //
     // const searchAndSort = useMemo(() => {
-        //поиск по сортированным постам
-        // return sortedPost.filter(p=>p.title.toLowerCase().includes(searchQuery))
-        // return sortedPost.filter(post => post.title.toLowerCase().includes(searchQuery))
+    //поиск по сортированным постам
+    // return sortedPost.filter(p=>p.title.toLowerCase().includes(searchQuery))
+    // return sortedPost.filter(post => post.title.toLowerCase().includes(searchQuery))
     // }, [searchQuery, sortedPost])
 
-useEffect(()=>{
+    useEffect(() => {
 //посты сразу подгружаются
-    fetchPosts()
-},[])
+        fetchPosts()
+    }, [])
 
-   async function fetchPosts(){
-       setIsPostLoading(true)
-        const  posts=await PostService.getAll()
-       setPost(posts)
-       setIsPostLoading(false)
-    }
+    // async function fetchPosts(){
+    //     setIsPostLoading(true)
+    //     //  const  posts=await PostService.getAll()
+    //     // setPost(posts)
+    //     setIsPostLoading(false)
+    //  }
     return (
         <div className="App">
             <Button onClick={fetchPosts}>Get Posts</Button>
-            <Button style={{marginTop:15}} onClick={() => setModalVisible(true)}> Add Post</Button>
+            <Button style={{marginTop: 15}} onClick={() => setModalVisible(true)}> Add Post</Button>
             <MyModal visible={modalVisible} setVisible={setModalVisible}>
                 <PostForm create={createPost}/>
             </MyModal>
@@ -82,14 +96,15 @@ useEffect(()=>{
                         {value: 'title', name: 'by name'},
                         {value: 'body', name: 'by description'}]}/>
             </div>
-
-            {setIsPostLoading
-                ?<div style={{display:'flex',justifyContent:"center"}}>
+            {postError &&
+                <div>{postError}</div>}
+            {isFetchPosts
+                ? <div style={{display: 'flex', justifyContent: "center"}}>
 
                     <Loader/>
                 </div>
                 :
-                 <><PostList removePost={removePost} title={'Frontend'} post={post}/>
+                <><PostList removePost={removePost} title={'Frontend'} post={post}/>
                     {/*<PostList title={'Backend'}*/}
                     {/*          post={post2}/>*/}
                 </>}
