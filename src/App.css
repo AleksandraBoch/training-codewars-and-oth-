@@ -30,3 +30,25 @@
     opacity: 0;
     transition: opacity 500ms ease-in;
 }
+
+.page_wrapper {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.page {
+    width: 30px;
+    height: 30px;
+    border: 1px solid lightblue;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.page_current{
+    width: 30px;
+    height: 30px;
+    border: 3px solid lightblue;
+    border-radius: 10px;
+}

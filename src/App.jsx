@@ -10,7 +10,8 @@ import {usePosts} from "./Ulbi/hooks/usePost";
 import PostService from "./Ulbi/API/postService";
 import Loader from "./Ulbi/Loader/Loader";
 import useFetching from "./Ulbi/hooks/useFetching";
-import {getPagesCount} from "./Ulbi/utils/pages";
+import {getPagesArray, getPagesCount} from "./Ulbi/utils/pages";
+import {formatTime} from "@storybook/blocks";
 
 function App() {
     const [post, setPost] = useState([
@@ -34,12 +35,13 @@ function App() {
     const [pages, setPages] = useState(1)
     const [limit, setLimit] = useState(10)
 
+    let pagesArray = getPagesArray(totalPages)
 
     const [fetchPosts, isFetchPosts, postError] = useFetching(async () => {
-        const response = await PostService.getAll(limit,pages)
+        const response = await PostService.getAll(limit, pages)
         setPost(response.data)
-        const totalCount=response.headers['x-total-count']
-        setTotalPages(getPagesCount(totalCount,limit))
+        const totalCount = response.headers['x-total-count']
+        setTotalPages(getPagesCount(totalCount, limit))
     })
 
 
@@ -108,6 +110,18 @@ function App() {
                     {/*<PostList title={'Backend'}*/}
                     {/*          post={post2}/>*/}
                 </>}
+            <div className='page_wrapper'>
+
+                {pagesArray.map(p =>
+                    <span key={p}
+                          //меняется подсветка страницы на нажатие
+                    onClick={()=>{setPages(p)}}
+                        className={pages === p ? 'page_current' : 'page'}>
+                        {p}
+                    </span>)}
+            </div>
+
+
         </div>
     );
 }
