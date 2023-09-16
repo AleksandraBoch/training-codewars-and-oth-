@@ -1,17 +1,23 @@
 import React from 'react';
 import './App.css';
 import Posts from "./Ulbi/pages/posts";
-import {Route} from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 import About from "./Ulbi/pages/about";
+import NavBAr from "./Ulbi/NavBar/NavBAr";
+import Error from "./Ulbi/pages/error";
+import PostId from "./Ulbi/pages/PostId";
 
 function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path={'/about'} component={About}/>
-                <Route path={'/posts'} component={Posts}/>
-            </Routes>
-        </BrowserRouter>
+        <Routes>
+            <Route path={'/'} element={<NavBAr/>}/>
+            <Route path={'/about'} element={<About/>}/>
+            <Route exact path={'/posts'} element={<Posts/>}/>
+            <Route  path={'/posts/id'} element={<PostId/>}/>
+            <Route path={'/error'} element={<Error/>}/>
+
+
+        </Routes>
     );
 }
 

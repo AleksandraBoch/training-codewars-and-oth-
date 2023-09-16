@@ -77,7 +77,7 @@ function Posts() {
     //     // setPost(posts)
     //     setIsPostLoading(false)
     //  }
-    const ChangePage=(page)=>{
+    const ChangePage = (page) => {
         setPage(page)
         fetchPosts(limit, page)
     }
@@ -109,12 +109,14 @@ function Posts() {
                     <Loader/>
                 </div>
                 :
-                <><PostList removePost={removePost} title={'Frontend'} post={post}/>
+                <><PostList removePost={removePost} title={'Posts'} post={post}/>
                     {/*<PostList title={'Backend'}*/}
                     {/*          post={post2}/>*/}
                 </>}
 
-            <Pagination page={page}   totalPages={totalPages} ChangePage={ChangePage}/>
+            <Pagination page={page}
+                        totalPages={totalPages}
+                        ChangePage={ChangePage}/>
 
         </div>
     );
