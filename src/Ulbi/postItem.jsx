@@ -13,7 +13,7 @@ const PostItem = (props) => {
             </div>
             <div className='button'>
                 <Button onClick={()=>props.removePost(props.post)}>Delete</Button>
-                <Button onClick={()=>router(`posts${props.post.id}`)}>Open</Button>
+                <Button onClick={()=>router(`/posts/${props.post.id}`)}>Open</Button>
             </div>
         </div>
     );

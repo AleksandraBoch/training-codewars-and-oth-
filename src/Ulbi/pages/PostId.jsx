@@ -7,7 +7,7 @@ import Loader from "../Loader/Loader";
 const PostId = () => {
     const params = useParams()
     const [post, setPost] = useState({})
-    const [com, setCom] = useState({})
+    const [com, setCom] = useState([])
     const [fetchPostById, isLoading, error] = useFetching(async (id) => {
         const response = await PostService.getById(id)
         setPost(response.data)
@@ -19,7 +19,7 @@ const PostId = () => {
     })
     useEffect(() => {
         fetchPostById(params.id)
-        fetchCommentsById()
+        fetchCommentsById(params.id)
     }, [])
     return (
         <div>
@@ -36,7 +36,7 @@ const PostId = () => {
                         {com.map(c =>
                             <div>
                                 <h5>c.email</h5>
-
+                                <h5>c.body</h5>
                             </div>)}
                     </div>
             } </>

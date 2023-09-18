@@ -12,7 +12,7 @@ import PostForm from "../PostForm";
 import MyInput from "../MyInput";
 import Select from "../select";
 import Loader from "../Loader/Loader";
-import {Pagination} from "@mui/material";
+import PaginationPage from "../pagination/pagination";
 
 function Posts() {
     const [post, setPost] = useState([
@@ -114,7 +114,7 @@ function Posts() {
                     {/*          post={post2}/>*/}
                 </>}
 
-            <Pagination page={page}
+            <PaginationPage page={page}
                         totalPages={totalPages}
                         ChangePage={ChangePage}/>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {getPagesArray} from "../utils/pages";
 
-const Pagination = ({totalPages,page,ChangePage}) => {
+const PaginationPage = ({totalPages,page,ChangePage}) => {
     let pagesArray = getPagesArray(totalPages)
     return (
 
@@ -19,4 +19,4 @@ const Pagination = ({totalPages,page,ChangePage}) => {
     );
 };
 
-export default Pagination;
+export default PaginationPage;

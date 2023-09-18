@@ -13,7 +13,7 @@ function App() {
             <Route path={'/'} element={<NavBAr/>}/>
             <Route path={'/about'} element={<About/>}/>
             <Route exact path={'/posts'} element={<Posts/>}/>
-            <Route  path={'/posts/id'} element={<PostId/>}/>
+            <Route exact path={'/posts/:id'} element={<PostId/>}/>
             <Route path={'/error'} element={<Error/>}/>
 
 
