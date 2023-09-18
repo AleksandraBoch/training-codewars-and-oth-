@@ -3,10 +3,10 @@ export const getPagesCount = (totalCount, limit) => {
 }
 
 export const getPagesArray = (totalPages) => {
-    //массив для сщздания кнопок
-    let resulty = []
+    //массив для сздания кнопок
+    let result = []
     for (let i = 0; i < totalPages; i++) {
-        resulty.push(i + 1)
+        result.push(i + 1)
     }
-return resulty
+return result
 }

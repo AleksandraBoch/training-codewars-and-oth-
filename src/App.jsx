@@ -6,6 +6,7 @@ import About from "./Ulbi/pages/about";
 import NavBAr from "./Ulbi/NavBar/NavBAr";
 import Error from "./Ulbi/pages/error";
 import PostId from "./Ulbi/pages/PostId";
+import {routes} from "./Ulbi/routes";
 
 function App() {
     return (
@@ -22,6 +23,15 @@ function App() {
 }
 
 export default App;
+
+// возможная маршрутизация
+// {routes.map(route =>
+//     <Route key={route.component}
+//            component={route.component}
+//            exact={route.exact}
+//            path={route.path}
+//     />
+// )}
 
 //отрисовываем посты вручную прописывая каждый элемент
 // <PostItem  post={{id:1,title:'JS',text:'Js-язык программирования'}}/>

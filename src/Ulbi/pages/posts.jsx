@@ -69,7 +69,7 @@ function Posts() {
     useEffect(() => {
 //посты сразу подгружаются
         fetchPosts(limit, page)
-    }, [])
+    }, [page, limit])
 
     // async function fetchPosts(){
     //     setIsPostLoading(true)
@@ -79,7 +79,6 @@ function Posts() {
     //  }
     const ChangePage = (page) => {
         setPage(page)
-        fetchPosts(limit, page)
     }
     return (
         <div className="App">
@@ -116,7 +115,8 @@ function Posts() {
 
             <PaginationPage page={page}
                         totalPages={totalPages}
-                        ChangePage={ChangePage}/>
+                        ChangePage={ChangePage}
+            />
 
         </div>
     );
