@@ -113,9 +113,10 @@ function Posts() {
                     {/*          post={post2}/>*/}
                 </>}
 
-            <PaginationPage page={page}
-                        totalPages={totalPages}
-                        ChangePage={ChangePage}
+            <PaginationPage
+                page={page}
+                totalPages={totalPages}
+                ChangePage={ChangePage}
             />
 
         </div>

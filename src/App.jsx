@@ -26,7 +26,7 @@ export default App;
 
 // возможная маршрутизация
 // {routes.map(route =>
-//     <Route key={route.component}
+//     <Route key={route.path}
 //            component={route.component}
 //            exact={route.exact}
 //            path={route.path}
