@@ -1,64 +1,69 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client';
 import { applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux'
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import axios from 'axios';
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
+import axios, { AxiosError } from 'axios';
+
 
 // Types
-type PhotoType = {
-    albumId: string
+type PostType = {
     id: string
+    body: string
     title: string
-    url: string
+    userId: string
 }
 
 // Api
-const instance = axios.create({baseURL: 'https://exams-frontend.kimitsu.it-incubator.ru/api/'})
+const instance = axios.create({baseURL: 'https://exams-frontend.kimitsu.it-incubator.ru/api/ '})
 
-const photosAPI = {
-    getPhotos() {
-        return instance.get<PhotoType[]>('photos?delay=2')
+const postsAPI = {
+    getPosts() {
+        return instance.get<PostType[]>('posts')
     },
 }
 
-
 // Reducer
 const initState = {
-    isLoading: false,
-    photos: [] as PhotoType[]
+    error: null as string | null,
+    posts: [] as PostType[]
 }
 
 type InitStateType = typeof initState
 
-const photoReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
+const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
     switch (action.type) {
-        case 'PHOTO/GET-PHOTOS':
-            return {...state, photos: action.photos}
-        case 'PHOTO/IS-LOADING':
-            return {...state, isLoading: action.isLoading}
+        case 'POSTS/GET-POSTS':
+            return {...state, posts: action.posts}
+
+        case 'POSTS/SET-ERROR':
+            return {...state, error: action.error}
+
         default:
             return state
     }
 }
 
-const getPhotosAC = (photos: PhotoType[]) => ({type: 'PHOTO/GET-PHOTOS', photos} as const)
-const setLoadingAC = (isLoading: boolean) => ({type: 'PHOTO/IS-LOADING', isLoading} as const)
-type ActionsType = ReturnType<typeof getPhotosAC> | ReturnType<typeof setLoadingAC>
 
-const getPhotosTC = (): AppThunk => (dispatch) => {
-    dispatch(setLoadingAC(true))
-    photosAPI.getPhotos()
+const getPostsAC = (posts: PostType[]) => ({type: 'POSTS/GET-POSTS', posts} as const)
+const setErrorAC = (error: string | null) => ({type: 'POSTS/SET-ERROR', error} as const)
+type ActionsType = ReturnType<typeof getPostsAC> | ReturnType<typeof setErrorAC>
+
+// Thunk
+const getPostsTC = (): AppThunk => (dispatch) => {
+    postsAPI.getPosts()
         .then((res) => {
-            dispatch(getPhotosAC(res.data))
-            dispatch(setLoadingAC((false)))
+            dispatch(getPostsAC(res.data))
         })
-
+        .catch((e: AxiosError) => {
+            dispatch(setErrorAC(e.message))
+        })
 }
+
 
 // Store
 const rootReducer = combineReducers({
-    photo: photoReducer
+    app: appReducer,
 })
 
 const store = createStore(rootReducer, applyMiddleware(thunk))
@@ -69,49 +74,42 @@ const useAppDispatch = () => useDispatch<AppDispatch>()
 const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 
-// Loader
-export const Loader = () => {
-    return (
-        <h1>Loading ...</h1>
-    )
-}
+// Components
+export const App = () => {
 
-// App
-const App = () => {
     const dispatch = useAppDispatch()
-    const photos = useAppSelector(state => state.photo.photos)
-    const isLoading = useAppSelector(state => state.photo.isLoading)
 
-    const getPhotosHandler = () => {
-        dispatch(getPhotosTC())
-    };
+    const posts = useAppSelector(state => state.app.posts)
+    const error = useAppSelector(state => state.app.error)
+
+    useEffect(() => {
+        dispatch(getPostsTC())
+    }, [])
 
     return (
         <>
-            <h1>📸 Фото</h1>
-            <button onClick={getPhotosHandler}>Подгрузить фотографии</button>
-            {isLoading && <Loader/>}
-            <div style={{display: 'flex', gap: '20px', margin: '20px'}}>{
-                photos.map(p => {
-                    return <div key={p.id}>
-                        <b>title</b>: {p.title}
-                        <div><img src={p.url} alt=""/></div>
-                    </div>
-                })
-            }</div>
+            <h1>📜 Список постов</h1>
+            {
+                posts.length
+                    ?
+                    posts.map(c => {
+                        return <div key={c.id}><b>Описание</b>: {c.body} </div>
+                    })
+                    :
+                    <h3>❌ Посты не подгрузились. Произошла какая-то ошибка. Выведите сообщение об ошибке на экран</h3>
+            }
+            <h2 style={{color: 'red'}}>{!!error && error}</h2>
         </>
     )
 }
-
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<Provider store={store}> <App/></Provider>)
 
 // 📜 Описание:
-// При нажатии на кнопку "Подгрузить фотографии" вы должны увидеть Loading...,
-// и через 3 секунды непосредственно фотографии.
-// Но после подгрузки данных Loader не убирается.
-// Какой код нужно написать, чтобы Loader перестал отображаться после получения данных
-// В качестве ответа напишите строку кода.
+// ❌ Посты не подгрузились. Произошла какая-то ошибка.
+// Чинить приложение не нужно (если только для себя, в ответе это не учитывается).
+// Задача: вывести сообщение об ошибке на экран.
+// В качестве ответа указать строку коду, которая позволит это осуществить
 
-// 🖥 Пример ответа: console.log('stop Loader')
+// 🖥 Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
