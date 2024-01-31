@@ -1,115 +1,88 @@
-import React, { useEffect } from 'react'
+import { useFormik } from 'formik';
+import React from 'react'
 import ReactDOM from 'react-dom/client';
-import { applyMiddleware, combineReducers, legacy_createStore as createStore } from 'redux'
-import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk'
-import axios, { AxiosError } from 'axios';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 
-// Types
-type PostType = {
-    id: string
-    body: string
-    title: string
-    userId: string
-}
+// Main
+export const Login = () => {
 
-// Api
-const instance = axios.create({baseURL: 'https://exams-frontend.kimitsu.it-incubator.ru/api/ '})
-
-const postsAPI = {
-    getPosts() {
-        return instance.get<PostType[]>('posts')
-    },
-}
-
-// Reducer
-const initState = {
-    error: null as string | null,
-    posts: [] as PostType[]
-}
-
-type InitStateType = typeof initState
-
-const appReducer = (state: InitStateType = initState, action: ActionsType): InitStateType => {
-    switch (action.type) {
-        case 'POSTS/GET-POSTS':
-            return {...state, posts: action.posts}
-
-        case 'POSTS/SET-ERROR':
-            return {...state, error: action.error}
-
-        default:
-            return state
-    }
-}
-
-
-const getPostsAC = (posts: PostType[]) => ({type: 'POSTS/GET-POSTS', posts} as const)
-const setErrorAC = (error: string | null) => ({type: 'POSTS/SET-ERROR', error} as const)
-type ActionsType = ReturnType<typeof getPostsAC> | ReturnType<typeof setErrorAC>
-
-// Thunk
-const getPostsTC = (): AppThunk => (dispatch) => {
-    postsAPI.getPosts()
-        .then((res) => {
-            dispatch(getPostsAC(res.data))
-        })
-        .catch((e: AxiosError) => {
-            dispatch(setErrorAC(e.message))
-        })
-}
-
-
-// Store
-const rootReducer = combineReducers({
-    app: appReducer,
-})
-
-const store = createStore(rootReducer, applyMiddleware(thunk))
-type RootState = ReturnType<typeof store.getState>
-type AppDispatch = ThunkDispatch<RootState, unknown, ActionsType>
-type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, ActionsType>
-const useAppDispatch = () => useDispatch<AppDispatch>()
-const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
-
-
-// Components
-export const App = () => {
-
-    const dispatch = useAppDispatch()
-
-    const posts = useAppSelector(state => state.app.posts)
-    const error = useAppSelector(state => state.app.error)
-
-    useEffect(() => {
-        dispatch(getPostsTC())
-    }, [])
+    const formik = useFormik({
+        initialValues: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            phone: '',
+        },
+        onSubmit: values => {
+            alert(JSON.stringify(values, null, 2));
+        },
+    });
 
     return (
-        <>
-            <h1>📜 Список постов</h1>
-            {
-                posts.length
-                    ?
-                    posts.map(c => {
-                        return <div key={c.id}><b>Описание</b>: {c.body} </div>
-                    })
-                    :
-                    <h3>❌ Посты не подгрузились. Произошла какая-то ошибка. Выведите сообщение об ошибке на экран</h3>
-            }
-            <h2 style={{color: 'red'}}>{!!error && error}</h2>
-        </>
+        <form onSubmit={formik.handleSubmit}>
+            <div>
+                <input
+                    name="firstName"
+                    onChange={formik.handleChange}
+                    value={formik.values.firstName}
+                    placeholder={'Введите имя'}
+                />
+            </div>
+            <div>
+                <input
+                    name="lastName"
+                    onChange={formik.handleChange}
+                    value={formik.values.lastName}
+                    placeholder={'Введите фамилию'}
+                />
+            </div>
+            <div>
+                <input
+                    name="email"
+                    onChange={formik.handleChange}
+                    value={formik.values.email}
+                    placeholder={'Введите email'}
+                />
+            </div>
+            <div>
+                <input
+                    name="password"
+                    onChange={formik.handleChange}
+                    value={formik.values.password}
+                    placeholder={'Введите пароль'}
+                    type={'password'}
+                />
+            </div>
+            <div>
+                <input
+                    name="phone"
+                    onChange={formik.handleChange}
+                    value={formik.values.phone}
+                    placeholder={'Введите телефон'}
+                />
+            </div>
+            <button type="submit">Отправить</button>
+        </form>
+    );
+}
+
+// App
+export const App = () => {
+    return (
+        <Routes>
+            <Route path={''} element={<Login/>}/>
+        </Routes>
     )
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(<Provider store={store}> <App/></Provider>)
+root.render(<BrowserRouter><App/></BrowserRouter>)
 
 // 📜 Описание:
-// ❌ Посты не подгрузились. Произошла какая-то ошибка.
-// Чинить приложение не нужно (если только для себя, в ответе это не учитывается).
-// Задача: вывести сообщение об ошибке на экран.
-// В качестве ответа указать строку коду, которая позволит это осуществить
+// Форма заполнения данных работает некорректно.
+// Пользователи жалуются на поле ввода "Телефона"
+// Найдите в коде ошибку. Исправленную версию строки напишите в качестве ответа.
 
-// 🖥 Пример ответа: const store = createStore(rootReducer, applyMiddleware(thunk))
+// 🖥 Пример ответа: <form onSubmit={formik.handleSubmit}>
