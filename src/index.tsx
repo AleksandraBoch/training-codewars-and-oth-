@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import React from "react";
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import {BrowserRouter, redirect, Route, Routes, useNavigate} from "react-router-dom";
 import axios from "axios";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
@@ -64,6 +64,7 @@ const loginTC =
                 .then((res) => {
                     dispatch(setIsLoggedIn(true));
                     alert("Вы залогинились успешно");
+                    redirect('profile')
                 })
                 .catch((e) => {
                     dispatch(setError(e.response.data.errors));
@@ -132,7 +133,9 @@ export const Login = () => {
                         {...formik.getFieldProps("password")}
                     />
                 </div>
-                <button type="submit">Залогиниться</button>
+                <button type="submit" onClick={()=>{
+                    isLoggedIn?navigate('/profile'):navigate('/')
+                }}>Залогиниться</button>
             </form>
         </div>
     );
