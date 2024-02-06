@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import React from "react";
 import { Provider, TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import ReactDOM from "react-dom/client";
-import {BrowserRouter, redirect, Route, Routes, useNavigate} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import axios from "axios";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
@@ -64,7 +64,6 @@ const loginTC =
                 .then((res) => {
                     dispatch(setIsLoggedIn(true));
                     alert("Вы залогинились успешно");
-                    redirect('profile')
                 })
                 .catch((e) => {
                     dispatch(setError(e.response.data.errors));
@@ -120,8 +119,10 @@ export const Login = () => {
 
     return (
         <div>
+
             {!!error && <h2 style={{ color: "red" }}>{error}</h2>}
             {isLoading && <Loader />}
+
             <form onSubmit={formik.handleSubmit}>
                 <div>
                     <input placeholder={"Введите email"} {...formik.getFieldProps("email")} />
@@ -133,9 +134,7 @@ export const Login = () => {
                         {...formik.getFieldProps("password")}
                     />
                 </div>
-                <button type="submit" onClick={()=>{
-                    isLoggedIn?navigate('/profile'):navigate('/')
-                }}>Залогиниться</button>
+                <button type="submit">Залогиниться</button>
             </form>
         </div>
     );
@@ -143,10 +142,13 @@ export const Login = () => {
 
 // App
 export const App = () => {
+
     return (
         <Routes>
-            <Route path={""} element={<Login />} />
-            <Route path={"profile"} element={<Profile />} />
+
+            <Route path={"profile"} element={<Profile />}/>
+
+
         </Routes>
     );
 };
@@ -167,3 +169,7 @@ root.render(
 
 // Напишите правильную строку кода
 // 🖥 Пример ответа:  console.log('If login => redirect to profile')
+// <Route
+//                 path=""
+//                 element={isLoggedIn ? <Navigate to="/profile" /> : <Login />}
+//             /> неверно
