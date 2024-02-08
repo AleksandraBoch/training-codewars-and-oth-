@@ -58,3 +58,11 @@ import React from "react";
 //     return new Set(str.toUpperCase()).size == str.length;
 // }
 //
+
+//Implement a function that adds two numbers together and returns their sum in binary. The conversion can be done before, or after the addition.
+//
+// The binary number returned should be a string.
+//function addBinary(a,b) {
+//   answer=a+b
+// return (answer, answer.toString(2))
+// }
